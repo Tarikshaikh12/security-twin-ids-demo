@@ -1,96 +1,145 @@
-# Risk-Aware IDS Placement using Security Twins
+# Security Twin IDS Placement Experiment
 
-This repository contains a conceptual experimental demonstration of **risk-aware Intrusion Detection System (IDS) placement** using a simplified **Security Twin network model**.
+This project demonstrates how a **Security Twin model** can be used to analyze attack propagation in a network and determine optimal placement of Intrusion Detection System (IDS) probes.
 
-The objective of the experiment is to illustrate how analyzing simulated attack paths can help identify **critical nodes in a network** where IDS probes should ideally be deployed.
+The main goal is to compare **risk-aware IDS placement** with **random IDS placement** and evaluate how effectively each strategy detects simulated attacks.
 
-This implementation supports the research presentation discussing Security Twins, IDS evaluation challenges, and explainable intrusion detection.
-
----
-
-# Concept
-
-Traditional IDS deployments often rely on static placement of sensors without considering how attackers actually move through a network.
-
-However, real-world networks are complex and attackers typically follow specific **attack paths** in order to reach critical assets such as databases or internal services.
-
-A **Security Twin** represents a digital abstraction of the network that allows security analysts to simulate attacks and study how threats propagate through the infrastructure.
-
-By analyzing these simulated attack paths, it becomes possible to identify:
-
-- nodes that attackers must traverse
-- critical choke points in the network
-- optimal locations for IDS probes
+The implementation is written in Python and uses network simulation, Monte Carlo experiments, and visualization techniques to analyze attack behavior in both small and large network environments.
 
 ---
 
-# Simulated Network Topology
+## Project Overview
 
-The simplified network used in this experiment contains the following components:
+Modern cloud infrastructures are complex and dynamic, making it difficult to determine where security monitoring components such as IDS sensors should be deployed.  
+To explore this problem, a **Security Twin** model of a network is constructed and used to simulate potential attack paths.
+
+The experiment follows these steps:
+
+1. Construct a network model (Security Twin)
+2. Simulate attacker movement through the network
+3. Calculate node risk scores based on attack paths
+4. Deploy IDS probes using different strategies
+5. Compare detection performance
+
+---
+
+## Network Models
+
+### Small Security Twin
+
+A simple network architecture consisting of six components:
 
 - Gateway
 - Load Balancer
 - Application Server A
 - Application Server B
 - Internal Switch
-- Database Server
+- Database
 
-The attacker attempts to reach the database through different valid attack paths.
-
----
-
-# Attack Path Simulation
-
-The experiment performs a **Monte Carlo simulation** where multiple attack attempts are generated.
-
-For each simulated attack:
-
-1. A valid attack path is randomly selected
-2. Each node visited during the attack is recorded
-3. Node traversal frequencies are calculated
-
-Nodes that appear frequently across attack paths represent **higher risk nodes**.
+This smaller model helps demonstrate the basic behavior of attack propagation and IDS placement strategies.
 
 ---
 
-# Risk Score Definition
+### Large Security Twin
 
-The risk score for each node is defined as:
+A larger and more realistic network is generated automatically using a **power-law cluster graph**, which produces properties commonly observed in real infrastructures:
 
-Risk(node) = Node Traversals / Total Simulated Attacks
+- Scale-free topology
+- Clustered connections
+- Multiple possible attack paths
 
-Nodes with higher scores indicate that attackers are very likely to traverse them during attacks.
+The large twin in this experiment contains approximately:
 
-Such nodes represent **strategic monitoring points for IDS deployment**.
+- **220 nodes**
+- **650+ edges**
 
----
-
-# IDS Placement Insight
-
-Instead of randomly deploying IDS probes in the network, the Security Twin approach allows us to identify **topological choke points** where monitoring coverage is maximized.
-
-This approach can help reduce:
-
-- missed attack paths
-- unnecessary IDS sensors
-- operational monitoring cost
+This allows more complex attack simulations and provides a more realistic environment for evaluating IDS placement.
 
 ---
 
-# Purpose of the Experiment
+## Attack Simulation
 
-This project demonstrates the **decision logic behind Security-Twin-based IDS placement** rather than implementing a full production IDS system.
+Attack behavior is simulated using a **Monte Carlo approach**.
 
-The goal is to provide a clear conceptual demonstration aligned with the research papers discussed in the presentation.
+Each simulation:
+
+1. Starts from the **attacker node**
+2. Moves through the network following directed edges
+3. Uses probabilistic edge compromise values
+4. Stops when the **target node** is reached or the attack fails
+
+Thousands of attack simulations are executed to estimate how frequently each node appears in successful attack paths.
 
 ---
 
-# Technologies Used
+## Risk Scoring
 
-Python  
-NetworkX  
-Matplotlib
+Nodes are assigned a **risk score** based on how frequently they appear in successful attack paths.
+
+Higher scores indicate nodes that are more likely to be involved in an attack propagation chain.
+
+These scores are then used to guide IDS placement.
 
 ---
-# The Presentation Link is here:
-https://www.canva.com/design/DAGQo7WVfbI/VQArqZA0ypvtAuKTNdQEmw/edit?utm_content=DAGQo7WVfbI&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton
+
+## IDS Placement Strategies
+
+Two IDS deployment strategies are evaluated.
+
+### Risk-Aware Placement
+
+IDS probes are placed on nodes with the highest calculated risk scores.
+
+This strategy attempts to monitor critical points in the attack propagation paths.
+
+---
+
+### Random Placement
+
+IDS probes are placed randomly across the network.
+
+This serves as a baseline to evaluate the benefit of risk-aware placement.
+
+---
+
+## Experimental Results
+
+Detection performance is evaluated for both network sizes.
+
+Example results from the experiment:
+
+| Network | Risk-Aware Detection | Random Detection |
+|-------|----------------------|----------------|
+| Small Twin | ~0.40 | ~0.07 |
+| Large Twin | ~0.02 | ~0.01 |
+
+The results show that **risk-aware IDS placement consistently performs better than random placement**, especially in structured networks.
+
+---
+
+## Visualization
+
+The experiment generates several visual outputs:
+
+- Network **risk heatmaps**
+- Highlighted **attacker and target nodes**
+- **IDS probe locations**
+- Example **attack propagation paths**
+- Detection performance comparison charts
+
+These visualizations help interpret how attacks move through the network and where monitoring should be placed.
+
+---
+
+## Technologies Used
+
+- Python
+- NetworkX
+- Matplotlib
+- Monte Carlo simulation
+
+---
+
+## Purpose of the Project
+
+This project is a conceptual demonstration of how **Security Twin modeling** can support cybersecurity analysis and help determine effective IDS deployment strategies in complex networks.
