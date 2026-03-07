@@ -92,7 +92,3 @@ NetworkX
 Matplotlib
 
 ---
-
-# How to Run the Simulation
-
-Install dependencies:
