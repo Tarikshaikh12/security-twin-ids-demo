@@ -1,14 +1,21 @@
 # Security Twin IDS Placement Simulation
 
 This repository contains a conceptual experimental simulation
-demonstrating risk-aware IDS probe placement using a Security Twin
-network abstraction.
+demonstrating risk-aware Intrusion Detection System (IDS) placement
+using a Security Twin abstraction.
 
-The experiment performs Monte Carlo attack path simulations
-to estimate node traversal frequency and identify topological
-choke points.
+The experiment models a simplified network topology and performs
+Monte Carlo attack path simulations to measure node traversal
+frequency across the network.
 
-Visualization includes:
+Nodes that frequently appear in attack paths are identified as
+topological choke points and recommended locations for IDS probes.
+
+The code also visualizes:
+
 - network topology
 - node risk heatmap
 - risk score distribution
+
+This experiment demonstrates the decision logic of Security-Twin-based
+IDS placement rather than implementing a full operational IDS.
